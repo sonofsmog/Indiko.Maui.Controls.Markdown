@@ -19,6 +19,15 @@ namespace Indiko.Maui.Controls.Markdown;
 
 public sealed class MarkdownView : ContentView
 {
+
+    public MarkdownView()
+    {
+        Application.Current.RequestedThemeChanged += (s, e) =>
+        {
+            RefreshStyling();
+        };
+    }
+
     private static readonly Regex EmailRegex = new Regex(@"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b", RegexOptions.Compiled);
 
     public static readonly BindableProperty MarkdownTextProperty =
@@ -423,6 +432,12 @@ public sealed class MarkdownView : ContentView
             }
         }
     }
+
+    public void RefreshStyling()
+    {
+        RenderMarkdown(MarkdownText ?? string.Empty);
+    }
+
 
     private void RenderMarkdown(string markdown)
     {
