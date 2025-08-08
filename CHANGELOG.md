@@ -1,3 +1,26 @@
+## [1.3.12](https://github.com/0xc3u/Indiko.Maui.Controls.Markdown/compare/v1.3.11...v1.3.12) (2025-08-03)
+
+
+### Bug Fixes
+
+* Adds image aspect ratio support ([ad23e47](https://github.com/0xc3u/Indiko.Maui.Controls.Markdown/commit/ad23e4753c367be4d2bccaa66128245e0c27cc03))
+* Removes unused Image declaration ([b9ea85c](https://github.com/0xc3u/Indiko.Maui.Controls.Markdown/commit/b9ea85cde8701b8a21b09c9b20f7168c727ee0d3))
+
+## [1.3.11](https://github.com/0xc3u/Indiko.Maui.Controls.Markdown/compare/v1.3.10...v1.3.11) (2025-08-03)
+
+
+### Bug Fixes
+
+* Adds image sizing support to MarkdownView ([ea6a346](https://github.com/0xc3u/Indiko.Maui.Controls.Markdown/commit/ea6a346461da8e5856c50e0aa4bf524ffa973533))
+* correctly handle data URL images in LoadImageAsync method ([620ad74](https://github.com/0xc3u/Indiko.Maui.Controls.Markdown/commit/620ad7489c36f9d30aa4ce6480bb3d9638a8a2cc))
+
+## [1.3.10](https://github.com/0xc3u/Indiko.Maui.Controls.Markdown/compare/v1.3.9...v1.3.10) (2025-07-30)
+
+
+### Bug Fixes
+
+* Updates Maui dependencies and target versions ([252fb21](https://github.com/0xc3u/Indiko.Maui.Controls.Markdown/commit/252fb217da3c8fd5c865b6c504c8d72806375b09))
+
 ## [1.3.9](https://github.com/0xc3u/Indiko.Maui.Controls.Markdown/compare/v1.3.8...v1.3.9) (2025-06-30)
 
 
