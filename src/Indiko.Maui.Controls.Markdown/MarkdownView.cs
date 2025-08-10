@@ -27,6 +27,17 @@ public sealed class MarkdownView : ContentView
             RefreshStyling();
         };
     }
+    
+    public event EventHandler ContentSizeChanged;
+
+    public static readonly BindableProperty AutoInvalidateParentProperty =
+        BindableProperty.Create(nameof(AutoInvalidateParent), typeof(bool), typeof(MarkdownView), true);
+
+    public bool AutoInvalidateParent
+    {
+        get => (bool)GetValue(AutoInvalidateParentProperty);
+        set => SetValue(AutoInvalidateParentProperty, value);
+    }
 
     private static readonly Regex EmailRegex = new Regex(@"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b", RegexOptions.Compiled);
 
@@ -691,7 +702,36 @@ public sealed class MarkdownView : ContentView
                 {
                     if (t.Status == TaskStatus.RanToCompletion)
                     {
-                        MainThread.BeginInvokeOnMainThread(() => img.Source = t.Result);
+                        MainThread.BeginInvokeOnMainThread(async () =>
+                        {
+                            img.Source = t.Result;
+
+                            // Wait for image to render
+                            await Task.Delay(150);
+
+                            // Trigger a property change that forces layout update
+                            var oldPadding = Padding;
+                            Padding = new Thickness(oldPadding.Left, oldPadding.Top, oldPadding.Right, oldPadding.Bottom + 0.1);
+                            await Task.Delay(50);
+                            Padding = oldPadding;
+
+                            // Also try changing the parent's padding briefly
+                            var parent = Parent;
+                            while (parent != null)
+                            {
+                                if (parent.GetType().Name.Contains("ResponseContent") && parent is View parentView)
+                                {
+                                    if (parentView is Layout layout)
+                                    {
+                                        var parentOldPadding = layout.Padding;
+                                        layout.Padding = new Thickness(parentOldPadding.Left, parentOldPadding.Top, parentOldPadding.Right, parentOldPadding.Bottom + 0.1);
+                                        await Task.Delay(50);
+                                        layout.Padding = parentOldPadding;
+                                    }
+                                }
+                                parent = parent.Parent;
+                            }
+                        });
                     }
                 });
 
