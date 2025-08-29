@@ -22,8 +22,7 @@ public sealed class MarkdownView : ContentView
 
     public MarkdownView()
     {
-        Application.Current.RequestedThemeChanged += (s, e) =>
-        {
+        Application.Current.RequestedThemeChanged += (s, e) =>        {
             RefreshStyling();
         };
     }
