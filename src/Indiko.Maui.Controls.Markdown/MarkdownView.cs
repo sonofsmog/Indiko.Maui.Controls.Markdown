@@ -19,15 +19,12 @@ namespace Indiko.Maui.Controls.Markdown;
 
 public sealed class MarkdownView : ContentView
 {
-
     public MarkdownView()
     {
         Application.Current.RequestedThemeChanged += (s, e) =>        {
             RefreshStyling();
         };
     }
-    
-    public event EventHandler ContentSizeChanged;
 
     public static readonly BindableProperty AutoInvalidateParentProperty =
         BindableProperty.Create(nameof(AutoInvalidateParent), typeof(bool), typeof(MarkdownView), true);
@@ -673,6 +670,15 @@ public sealed class MarkdownView : ContentView
                         img.WidthRequest = w;
                         img.MinimumWidthRequest = w;
                         img.MaximumWidthRequest = w;
+                        
+                        // If no height specified, assume 16:9 video thumbnail aspect ratio
+                        // This reserves layout space before image loads, preventing scroll jump
+                        if (string.IsNullOrEmpty(heightValue))
+                        {
+                            var estimatedHeight = w * 9.0 / 16.0; // 16:9 aspect ratio
+                            img.HeightRequest = estimatedHeight;
+                            img.MinimumHeightRequest = estimatedHeight;
+                        }
                     }
 
                     if (double.TryParse(heightValue, out var h))
@@ -690,13 +696,19 @@ public sealed class MarkdownView : ContentView
                 }
                 else
                 {
-                    // No attributes found, fallback to dynamic width
+                    // No attributes found, fallback to dynamic width with 16:9 aspect ratio
                     double maxWidth = DeviceDisplay.MainDisplayInfo.Width / DeviceDisplay.MainDisplayInfo.Density - 20;
+                    img.WidthRequest = maxWidth;
                     img.MinimumWidthRequest = maxWidth;
                     img.MaximumWidthRequest = maxWidth;
+                    
+                    // Reserve height for 16:9 video thumbnails (most common in AI responses)
+                    var estimatedHeight = maxWidth * 9.0 / 16.0;
+                    img.HeightRequest = estimatedHeight;
+                    img.MinimumHeightRequest = estimatedHeight;
                 }
 
-                // Load the image asynchronously
+                // Load the image asynchronously (layout space already reserved via HeightRequest)
                 LoadImageAsync(link.Url).ContinueWith(t =>
                 {
                     if (t.Status == TaskStatus.RanToCompletion)
