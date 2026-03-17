@@ -1411,6 +1411,12 @@ public sealed class MarkdownView : ContentView
                         else
                         {
                             using var httpClient = new HttpClient();
+                            // Add Referer header for YouTube thumbnails to bypass hotlink protection
+                            if (uriResult.Host.Contains("ytimg.com", StringComparison.OrdinalIgnoreCase) ||
+                                uriResult.Host.Contains("youtube.com", StringComparison.OrdinalIgnoreCase))
+                            {
+                                httpClient.DefaultRequestHeaders.Referrer = new Uri("https://www.youtube.com/");
+                            }
                             var imageBytes = await httpClient.GetByteArrayAsync(uriResult)
                                 .ConfigureAwait(false);
                             if (imageBytes != null)
